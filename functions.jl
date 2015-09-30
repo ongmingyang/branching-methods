@@ -1,6 +1,6 @@
 # Computes the value of f(x) = x'Ax
 #
-# @param A is an n*n square matrix
+# @param A is an n*n symmetric matrix
 # @param x is a vector of size n
 # return f(x) = x'Ax
 #
@@ -10,84 +10,24 @@ function objective_function(A, x)
   return value[1]
 end
 
-# Finds a fair estimate for the optimization problem
+# Given f(x) = x'Ax, finds the difference between 
+# f(x) and f(x2) where x2 is x mutated at the ith index
 #
-#     max f(x) = x'Ax
-#     s.t. x^2 = 1
+# The difference between x'Ax and y'Ay is computed as 
+# (+-)4 e_i A x + 4 e_i' A e_i
+# Given the assumption that A is symmetric
 #
-# By mutating x at one random index at each iteration and picks the value of
-# argmax(f(x), f(mutated_x)) for the next iteration.
-# 
-# The function terminates after k iterations, where k is chosen to be n^2 in
-# this particular implementation
+# @param A is an n*n symmetric matrix
+# @param x is a vector of size n
+# @param i is index i
+# return f(x2) - f(x)
 #
-# @param A is a square matrix
-# return x
-#
-function random_mutation(A)
+function difference_function(A, x, i)
   n = size(A, 1)
-  k = n^2
-  x = ones(n)
-  best_guess = objective_function(A,x)
-
-  # Mutate x at k random points
-  for i=1:k
-    mutation_index = rand(1:n)
-    x[mutation_index] = -x[mutation_index]
-    new_guess = objective_function(A,x)
-    if new_guess > best_guess
-      best_guess = new_guess 
-    else
-      x[mutation_index] = -x[mutation_index]
-    end
-  end
-  return x
-end
-
-# Finds a fair estimate for the optimization problem
-#
-#     max f(x) = x'Ax
-#     s.t. x^2 = 1
-#
-# by systematically mutating x pointwise to attain the best possible value of
-# f(x) amongst its neighbours
-#
-# The function terminates after f(x) > f(y) for all y in neighbourhood(x) and
-# returns the discovered value of x
-#
-# @param A is a square matrix
-# return x
-#
-function greedy_one_opt(A)
-  n = size(A, 1)
-  x = ones(n)
-  still_guessing = true
-  best_guess = objective_function(A,x)
-  guess_vector = copy(x)
-
-  while still_guessing
-    x = guess_vector
-    original_guess = best_guess
-
-    for i=1:length(x)
-      x[i] = -x[i]
-      new_guess = objective_function(A,x)
-      if new_guess > best_guess
-        best_guess = new_guess
-        guess_vector = copy(x)
-      end
-      x[i] = -x[i]
-
-      # The algorithm terminates if all mutations in the neighbourhood do not
-      # improve the value of f(x)
-      if (i == length(x)) && (best_guess == original_guess)
-        still_guessing = false
-      end
-    end
-
-  end
-
-  return x
+  e_i = spzeros(n,1)
+  e_i[i] = (-1) * x[i]
+  difference = 4 * e_i' * A * x + 4 * objective_function(A, e_i)
+  return difference[1]
 end
 
 # Prints the value of a vector in a nice format

@@ -1,15 +1,19 @@
 include("functions.jl")
+include("greedy_one_opt.jl")
+include("random_mutation.jl")
 
 # A is arbitrary
-n = 100
+n = 200
 A = - rand(n,n) + eye(n)
+A = A + A'
+# (TODO) use a random gaussian
+# make symmetric
+
 x = greedy_one_opt(A)
-print("Final answer with one_opt method: \n")
-pretty_print(x)
+print("Final objective with one_opt method: $x \n")
 
 x = random_mutation(A)
-print("Final answer with random_mutation method: \n")
-pretty_print(x)
+print("Final objective with random_mutation method: $x \n")
 
 print("Timing information\n")
 print("==================\n\n")
@@ -17,12 +21,12 @@ print("Greedy one opt algorithm: \n")
 @time greedy_one_opt(A)
 Profile.init(delay=0.0001)
 @profile greedy_one_opt(A)
-Profile.print()
+# Profile.print()
 
 print("Timing information\n")
 print("==================\n\n")
-print("Random mutation algorithm: \n")
+  print("Random mutation algorithm: \n")
 @time random_mutation(A)
 Profile.init(delay=0.0001)
 @profile random_mutation(A)
-Profile.print()
+# Profile.print()

@@ -24,15 +24,24 @@ function random_mutation(A)
   k = n  # k = n is arbitrary
 
   # Mutate x until k evaluations yield no improvement
+  # Also pre-generate Ax for optimization purposes
+  Ax = A * x
   counter = 0
   while counter <= k
     mutation_index = rand(1:n)
 
-    difference = difference_function(A, x, mutation_index)
+    difference = difference_function(A, x, mutation_index, Ax)
 
     if difference > 0
       x[mutation_index] = -x[mutation_index]
       best_guess = best_guess + difference
+
+      # Update the value of Ax for optimization purposes
+      e_i = spzeros(n,1)
+      e_i[mutation_index] = (-1) * x[mutation_index]
+      Ax += A * 2 * e_i
+
+      # Resets the counter and retries the k iterations
       counter = 0
     else
       counter += 1

@@ -3,7 +3,7 @@ include("greedy_one_opt.jl")
 include("random_mutation.jl")
 
 # A is arbitrary
-n = 200
+n = 500
 A = - rand(n,n) + eye(n)
 A = A + A'
 # (TODO) use a random gaussian

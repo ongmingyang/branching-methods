@@ -21,16 +21,26 @@ function greedy_one_opt(A)
   best_guess = objective_function(A,x)
   guess_index = 1
 
+  # Pre-generate Ax for optimization purposes
+  Ax = A * x
+
   while still_guessing
     x[guess_index] = -x[guess_index]
     original_guess = best_guess
 
     for i=1:n
-      difference = difference_function(A, x, i)
+      difference = difference_function(A, x, i, Ax)
 
       if best_guess < original_guess + difference
         best_guess = original_guess + difference
         guess_index = i
+
+        # Update the value of Ax for optimization purposes
+        # TODO this appears to have insignificant effect with real time 
+        # performance measurements
+        e_i = spzeros(n,1)
+        e_i[i] = (-1) * x[i]
+        Ax += A * 2 * e_i
       end
 
       # The algorithm terminates if all mutations in the neighbourhood do not

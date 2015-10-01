@@ -20,13 +20,19 @@ end
 # @param A is an n*n symmetric matrix
 # @param x is a vector of size n
 # @param i is index i
+# @param Ax_provided is an optional argument if the caller knows the value of
+# A * x beforehand. This argument is used for optimization purposes.
 # return f(x2) - f(x)
 #
-function difference_function(A, x, i)
+function difference_function(A, x, i, Ax=false)
   n = size(A, 1)
   e_i = spzeros(n,1)
   e_i[i] = (-1) * x[i]
-  difference = 4 * e_i' * A * x + 4 * objective_function(A, e_i)
+
+  # Generate Ax if caller does not provide
+  Ax = (Ax == false ? A * x : Ax)
+
+  difference = 4 * e_i' * Ax + 4 * objective_function(A, e_i)
   return difference[1]
 end
 

@@ -1,4 +1,4 @@
-include("functions.jl")
+require("lib/functions.jl")
 
 # Finds a local optimum for the optimization problem with high probability,
 # TODO: quantify high probability?

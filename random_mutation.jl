@@ -24,7 +24,8 @@ function random_mutation(A)
   k = n  # k = n is arbitrary
 
   # Mutate x until k evaluations yield no improvement
-  # Also pre-generate Ax for optimization purposes
+  #
+  # pre-generate Ax for optimization purposes
   Ax = A * x
   counter = 0
   while counter <= k
@@ -33,7 +34,7 @@ function random_mutation(A)
     difference = difference_function(A, x, mutation_index, Ax)
 
     if difference > 0
-      x[mutation_index] = -x[mutation_index]
+      x[mutation_index] *= -1
       best_guess = best_guess + difference
 
       # Update the value of Ax for optimization purposes

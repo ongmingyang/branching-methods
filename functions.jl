@@ -6,7 +6,6 @@
 #
 function objective_function(A, x)
   value = x' * A * x 
-  # print(x, value[1], "\n")
   return value[1]
 end
 

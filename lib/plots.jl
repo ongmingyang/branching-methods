@@ -24,7 +24,12 @@ type Plot
           "name" => name,
           "x" => hist,
           "type" => "histogram",
-          "histnorm" => "probability"
+          "histnorm" => "probability",
+          "xbins" => [
+              "start" => fld(minimum(hist), 50) * 50,
+              "end" => (fld(maximum(hist), 50) + 1) * 50,
+              "size" => 50
+          ]
         ]
       )
       return

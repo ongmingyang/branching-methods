@@ -20,13 +20,15 @@ function simulated_annealing(A)
   n = size(A, 1)
 
   # Temperature is arbitrary
-  T = 5000
+  T = 1
 
   # Stop evaluating improvements in x after k mutations 
-  k = n  # k = n is arbitrary
+  k = n  # k = n^2 is arbitrary
 
   x = ones(n)
   current_objective = objective_function(A,x)
+  best_guess = current_objective
+  best_x = copy(x)
 
   # Mutate x until k evaluations yield no improvement
   #
@@ -46,16 +48,21 @@ function simulated_annealing(A)
       current_objective += difference
 
       # Update the value of Ax for optimization purposes
-      e_i = spzeros(n,1)
-      e_i[mutation_index] = (-1) * x[mutation_index]
+      e_i = sparsevec([mutation_index => x[mutation_index]], n)
       Ax += A * 2 * e_i
 
+    end
+
+    if current_objective > best_guess
       # Resets the counter and retries the k iterations
       counter = 0
+      best_guess = current_objective
+      best_x = copy(x)
+      T = 1
     else
       counter += 1
-      T = T > 1 ? T * (1-1/n) : 1
+      T = exp(-counter)
     end
   end
-  return current_objective
+  return objective_function(A, best_x)
 end

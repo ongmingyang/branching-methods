@@ -38,9 +38,7 @@ function random_mutation(A)
       best_guess += difference
 
       # Update the value of Ax for optimization purposes
-      e_i = spzeros(n,1)
-      e_i[mutation_index] = (-1) * x[mutation_index]
-      Ax += A * 2 * e_i
+      Ax += A * 2 * sparsevec([mutation_index => x[mutation_index]],n)
 
       # Resets the counter and retries the k iterations
       counter = 0

@@ -1,6 +1,13 @@
 using Plotly
 
-# Defines a Plot class that abstracts away plotting graphs for this project
+# Defines a Plot class that uploads histogram plots to plotly
+#
+# The following sequence of calls uploads a histogram with data [data] and
+# title [title] to plotly, and returns a url linking to the plot:
+#
+#   p = Plot()
+#   p.add(data, title)
+#   p.upload()
 #
 type Plot
   data
@@ -25,7 +32,7 @@ type Plot
 
     this.upload = function ()
       layout = [
-        "barmode" => "stacked",
+        "barmode" => "group",
         "title" => "Histogram of optimum values",
         "xaxis" => ["title" => "Output of maximizer"],
         "yaxis" => ["title" => "Frequency"]

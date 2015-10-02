@@ -9,19 +9,16 @@ n = 200
 I = 50
 # A = sparse_generate(n)
 A = not_so_sparse(n)
-# (TODO) use a random gaussian
 
 plot = Plot()
 
 x = greedy_one_opt(A)
-# print("Final objective with one_opt method: $x \n")
 hist1 = Float64[x]
 plot.add(hist1, "Greedy 1-OPT")
 
 hist2 = Float64[]
 for i=1:I
   x = random_mutation(A)
-  # print("Final objective with random_mutation method: $x \n")
   push!(hist2,x)
 end
 plot.add(hist2, "Random Mutation")
@@ -29,7 +26,6 @@ plot.add(hist2, "Random Mutation")
 hist3 = Float64[]
 for i=1:I
   x = simulated_annealing(A)
-  print("Final objective with simulated_annealing method: $x \n")
   push!(hist3,x)
 end
 plot.add(hist3, "Simulated Annealing")
@@ -51,4 +47,12 @@ print("Random mutation algorithm: \n")
 @time random_mutation(A)
 # Profile.init(delay=0.0001)
 # @profile random_mutation(A)
+# Profile.print()
+
+print("Timing information\n")
+print("==================\n")
+print("Simulated annealing algorithm: \n")
+@time simulated_annealing(A)
+# Profile.init(delay=0.0001)
+# @profile simulated_annealing(A)
 # Profile.print()

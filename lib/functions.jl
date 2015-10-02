@@ -25,8 +25,7 @@ end
 #
 function difference_function(A, x, i, Ax=false)
   n = size(A, 1)
-  e_i = spzeros(n,1)
-  e_i[i] = (-1) * x[i]
+  e_i = sparsevec([i => (-1) * x[i]], n)
 
   # Generate Ax if caller does not provide
   Ax = (Ax == false ? A * x : Ax)

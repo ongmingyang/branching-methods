@@ -1,7 +1,9 @@
 # Returns a dense n*n symmetric matrix
+# A follows a normal distribution with mean 0 and std 1
 #
 function not_so_sparse(n)
-  A = -rand(n,n) + eye(n)
+  A = zeros(n,n)
+  A = randn!(A)
   return A + A'
 end
 

@@ -1,7 +1,6 @@
 require("lib/functions.jl")
 
 # Finds a local optimum for the optimization problem with high probability,
-# TODO: quantify high probability?
 #
 #     max f(x) = x'Ax
 #     s.t. x^2 = 1
@@ -11,17 +10,23 @@ require("lib/functions.jl")
 # 
 # The function terminates after k iterations, where k is chosen to be n^2 in
 # this particular implementation
+# TODO: This algorithm takes forever to terminate, change the termination
+# criteria
 #
 # @param A is a square matrix
 # return x'Ax
 #
-function random_mutation(A)
+function simulated_annealing(A)
   n = size(A, 1)
-  x = ones(n)
-  best_guess = objective_function(A,x)
+
+  # Temperature is arbitrary
+  T = 5000
 
   # Stop evaluating improvements in x after k mutations 
   k = n  # k = n is arbitrary
+
+  x = ones(n)
+  current_objective = objective_function(A,x)
 
   # Mutate x until k evaluations yield no improvement
   #
@@ -33,9 +38,12 @@ function random_mutation(A)
 
     difference = difference_function(A, x, mutation_index, Ax)
 
-    if difference > 0
+    # Escape parameterization
+    acceptance_probability = exp(difference/T)
+
+    if rand() < acceptance_probability
       x[mutation_index] *= -1
-      best_guess += difference
+      current_objective += difference
 
       # Update the value of Ax for optimization purposes
       e_i = spzeros(n,1)
@@ -46,7 +54,8 @@ function random_mutation(A)
       counter = 0
     else
       counter += 1
+      T = T > 1 ? T * (1-1/n) : 1
     end
   end
-  return best_guess
+  return current_objective
 end

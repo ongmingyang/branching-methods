@@ -17,23 +17,15 @@ require("lib/functions.jl")
 function greedy_one_opt(A)
   n = size(A, 1)
   x = ones(n)
-  still_guessing = true
-  best_guess = objective_function(A,x)
-  guess_index = 1
 
   # Pre-generate Ax for optimization purposes
   Ax = A * x
 
-  while still_guessing
-    # Update the value of Ax for optimization purposes
-    # TODO this appears to have insignificant effect with real time 
-    # performance measurements
-    e_i = spzeros(n,1)
-    e_i[guess_index] = (-1) * x[guess_index]
-    Ax += 2 * A * e_i
+  best_guess = objective_function(A,x)
+  guess_index = 1
 
-    # Update the value for x
-    x[guess_index] *= -1
+  while true
+
     original_guess = best_guess
 
     for i=1:n
@@ -43,13 +35,19 @@ function greedy_one_opt(A)
         best_guess = original_guess + difference
         guess_index = i
       end
-
-      # The algorithm terminates if all mutations in the neighbourhood do not
-      # improve the value of f(x)
-      if (i == n) && (best_guess == original_guess)
-        still_guessing = false
-      end
     end
+
+    # The algorithm terminates if all mutations in the neighbourhood do not
+    # improve the value of f(x)
+    if best_guess == original_guess
+      break
+    end
+
+    # Update the value for x
+    x[guess_index] *= -1
+
+    # Update the value of Ax for optimization purposes
+    Ax += 2 * A * sparsevec([guess_index => x[guess_index]],n)
 
   end
 

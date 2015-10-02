@@ -3,8 +3,9 @@ require("lib/plots.jl")
 require("lib/functions.jl")
 require("greedy_one_opt.jl")
 require("random_mutation.jl")
+require("simulated_annealing.jl")
 
-n = 100
+n = 200
 I = 50
 # A = sparse_generate(n)
 A = not_so_sparse(n)
@@ -24,6 +25,14 @@ for i=1:I
   push!(hist2,x)
 end
 plot.add(hist2, "Random Mutation")
+
+hist3 = Float64[]
+for i=1:I
+  x = simulated_annealing(A)
+  print("Final objective with simulated_annealing method: $x \n")
+  push!(hist3,x)
+end
+plot.add(hist3, "Simulated Annealing")
 
 url = plot.upload()
 print("URL for plot here: $url\n\n")

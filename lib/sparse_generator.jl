@@ -1,3 +1,9 @@
+# Returns a random binary vector of length n
+#
+function rand_vec(n)
+  return rand(0:1, n)*2 - 1
+end
+
 # Returns a dense n*n symmetric matrix
 # A follows a normal distribution with mean 0 and std 1
 #
@@ -6,8 +12,7 @@ function not_so_sparse(n)
   return A + A'
 end
 
-# Returns a sparse symmetric matrix
-# Representing a graph with maximum degree k
+# Returns the graph laplacian of a sparse graph of maximum degree k
 #
 # @param n required to be even
 #
@@ -26,9 +31,8 @@ function sparse_generate(n)
   A = sparse(full(A)) # Tridiagonal has no sparse cast
 
   for i=1:k
-    perm = randcycle(n)
-    M += A[perm, perm]
+    M += symperm(A,randcycle(n))
   end
-  return M
+  return k*eye(n) - M
 end
 
